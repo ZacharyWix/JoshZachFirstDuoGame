@@ -27,7 +27,7 @@ public class Movement : MonoBehaviour
         moveX = Input.GetAxisRaw("Horizontal");
         moveZ = Input.GetAxisRaw("Vertical");
 
-        rb.AddForce(moveX * moveSpeed, 0, moveZ * moveSpeed);
+        rb.velocity = new Vector3(moveX * moveSpeed, rb.velocity.y, moveZ * moveSpeed);
 
 
 
