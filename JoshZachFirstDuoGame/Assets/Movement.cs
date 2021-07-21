@@ -15,6 +15,10 @@ public class Movement : MonoBehaviour
     private bool jump;
     public int jumpForce;
 
+    public Transform groundCheck;
+    public float groundCheckRadius;
+    public LayerMask groundLayer;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -29,14 +33,17 @@ public class Movement : MonoBehaviour
 
         rb.velocity = new Vector3(moveX * moveSpeed, rb.velocity.y, moveZ * moveSpeed);
 
-
-
         jump = Input.GetButtonDown("Jump");
 
         if (jump) {
-            rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
-        }
+            Collider[] colliders = Physics.OverlapSphere(groundCheck.position, groundCheckRadius, groundLayer);
 
-        
+            if (colliders.Length > 0)
+            {
+                rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
+            }
+            
+        }
+ 
     }
 }
