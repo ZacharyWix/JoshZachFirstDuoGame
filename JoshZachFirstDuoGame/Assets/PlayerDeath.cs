@@ -17,11 +17,14 @@ public class PlayerDeath : MonoBehaviour
 
     private ParticleSystem deathParticles;
 
+    private Health health;
+
     private void Start()
     {
         mr = gameObject.GetComponent<MeshRenderer>();
         bc = gameObject.GetComponent<BoxCollider>();
         deathParticles = gameObject.GetComponentInChildren<ParticleSystem>();
+        health = gameObject.GetComponent<Health>();
     }
 
     // Update is called once per frame
@@ -35,22 +38,40 @@ public class PlayerDeath : MonoBehaviour
                 mr.enabled = true;
                 bc.enabled = true;
                 isDead = false;
+                health.resetHealth();
             }
 
             deathTimer -= Time.deltaTime;
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionStay(Collision collision)
     {
         if (collision.gameObject.tag == "Enemy")
         {
-            mr.enabled = false;
-            bc.enabled = false;
-            isDead = true;
-            deathParticles.Play();
-            deathTimer = respawnTimer;
+           if (health.updateHealth(-1) <= 0)
+            {
+                killPlayer();
+            }
         }
+    }
+
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Instakill")
+        {
+            killPlayer();
+        }
+    }
+
+    public void killPlayer()
+    {
+        mr.enabled = false;
+        bc.enabled = false;
+        isDead = true;
+        deathParticles.Play();
+        deathTimer = respawnTimer;
     }
 
 }
